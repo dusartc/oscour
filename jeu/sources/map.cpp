@@ -1,21 +1,18 @@
 #include "map.h"
 
 Map::Map(){
-	_longueur = 1000;
+	_longueur = 100;
 }
 
-Map::addJoueur(Joueur j){
-	_j = j;
+void Map::addObs(int x) {
+	_obs.push_back(x);
 }
 
-Map::addObs(int x){
-	_obs.push_back[x];
-}
-
-Map::end() {
-	for (std::vector<int>::iterator it = _obs.begin(); it != _obs.end(); it++){
-		if( _j.x == *it ){
-			return true
-		}
-	} return false
-}
+//bool Map::end() {
+//	for (std::vector<int>::iterator it = _obs.begin(); it != _obs.end(); it++){
+//		if( _j.x == *it ){
+//			return true;
+//		}
+//	} 
+//	return _j.x == _longueur;
+//}

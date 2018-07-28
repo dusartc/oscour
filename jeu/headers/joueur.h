@@ -1,4 +1,4 @@
-class joueur {
+class Joueur {
 	public:
 		int x;
 		int y;
@@ -6,5 +6,5 @@ class joueur {
 		void avance();
 		void saute();
 
-		joueur();
+		Joueur();
 };
