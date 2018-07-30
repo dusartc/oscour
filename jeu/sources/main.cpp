@@ -1,10 +1,10 @@
 #include <iostream>
-#include "map.hpp"
-#include "joueur.hpp"
 #include <algorithm>
 #include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
+#include "map.hpp"
+#include "joueur.hpp"
 using namespace std;
 
 int main(int argc, char *argv[]){
@@ -12,7 +12,7 @@ int main(int argc, char *argv[]){
 	Map m;
 	Joueur j;
 	bool end = false;
-	string s;
+	string premiereLigne, deuxiemeLigne;
 	m.addObs(5);
 	m.addObs(15);
 	m.addObs(20);
@@ -20,30 +20,49 @@ int main(int argc, char *argv[]){
 	m.addObs(95);
 //	cout << "joueur x : " << j.x << endl;
 	while(!end) {
-		
-		s = "o";
+		if(j.y == 0){
+			premiereLigne = "\n";
+			deuxiemeLigne = "o";
+		} else {
+			premiereLigne = "o\n";
+			deuxiemeLigne = "_";
+		}
 		for(int i=j.x+1;i<min(m._longueur,j.x+10);i++){
 			if(find(m._obs.begin(), m._obs.end(), i) != m._obs.end()) {
-				s += "|";
+				deuxiemeLigne += "|";
 			} else {
-				s += "_";
+				deuxiemeLigne += "_";
 			}		
 		}	
-		s += " fitness : ";
+		deuxiemeLigne += " fitness : ";
 
-		cout << s << j.x << endl;
+		cout << premiereLigne << deuxiemeLigne << j.x << endl;
 		for (vector<int>::iterator it = m._obs.begin(); it !=m. _obs.end(); it++){
-			if( j.x == *it ){
+			if( j.x == *it and j.y==0){
 				end = true;
 				cout << "rip" << endl;
 			} 
 		}
 		if(j.x == m._longueur) end = true;
 
-		if(rand()%10+1 > 5){
-			j.avance();
-		} else {
+		if(j.momentum){
+			j.sautavant();
+			j.momentum = false;
+		} else if(j.nextmove){
 			j.saute();
+			j.nextmove = false;
+		} else {
+			if(rand()%10+1 > 5){
+				if(rand()%10+1 > 5){
+					j.sautavant();
+					j.momentum = true;
+				} else {
+					j.saute();
+					j.nextmove = true;
+				}
+			} else {
+				j.avance();
+			}
 		}
 		usleep(1000000);
 		system("clear"); //degueulasse/20

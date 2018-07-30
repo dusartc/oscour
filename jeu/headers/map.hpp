@@ -13,3 +13,5 @@ class Map {
 		void addObs(int x);
 		bool end();
 };
+
+#endif
