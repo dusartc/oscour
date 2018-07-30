@@ -1,4 +1,4 @@
-#include "joueur.h"
+#include "joueur.hpp"
 
 Joueur::Joueur() {
 	x = 0;

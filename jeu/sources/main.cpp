@@ -1,6 +1,6 @@
 #include <iostream>
-#include "map.cpp"
-#include "joueur.cpp"
+#include "map.hpp"
+#include "joueur.hpp"
 #include <algorithm>
 #include <stdlib.h>
 #include <time.h>
