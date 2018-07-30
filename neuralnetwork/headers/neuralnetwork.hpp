@@ -8,29 +8,35 @@ typedef unsigned int uint;
 
 
 class NeuralNode {
-    /* represents a neuron  connected to other neurons */
+	/* represents a neuron  connected to other neurons */
 public:
-    std::list<NeuralNode> _branches;
-    std::list<float>      _branches_synapses;
-    std::list<uint>       _leaves;
-    std::list<float>      _leaves_synapses;
+	std::list<NeuralNode> _branches;
+	std::list<float>      _branches_synapses;
+	std::list<uint>       _leaves;
+	std::list<float>      _leaves_synapses;
 
-    NeuralNode::NeuralNode (uint nb__input, uint nb_synapses, uint deepness, uint deepness_max);
+	NeuralNode (uint nb__input, uint nb_synapses, uint deepness, uint deepness_max);
+	NeuralNode (const NeuralNode&);
 
-    float neuronValue (std::vector<float>& inputs);
+	float neuronValue (std::vector<float>& inputs);
+
+	uint numberOfNeurons ();
+
+	/* genetic function */
+	void mutate (float mutation_chance, uint nb__input);
 };
 
 
 class NeuralNetwork {
-    /* neural network coded as trees : one tree for each output and each tree leaves are inputs */
+	/* neural network coded as trees : one tree for each output and each tree leaves are inputs */
 public:
-    uint _nb__input;
-    uint _nb_output;
-    std::vector <NeuralNode> _trees;
+	uint _nb__input;
+	uint _nb_output;
+	std::vector <NeuralNode> _trees;
 
-    NeuralNetwork (uint nb__input, uint nb_output, uint nb_synapses, uint deepness_max);
+	NeuralNetwork (uint nb__input, uint nb_output, uint nb_synapses, uint deepness_max);
 
-    std::vector<float> outputs (std::vector<float>& inputs);
+	std::vector<float> outputs (std::vector<float>& inputs);
 };
 
 
