@@ -15,12 +15,16 @@ public:
 	std::list<uint>       _leaves;
 	std::list<float>      _leaves_synapses;
 
+	/* constructors */
 	NeuralNode (uint nb__input, uint nb_synapses, uint deepness, uint deepness_max);
 	NeuralNode (const NeuralNode&);
 
+	/* output computation */
 	float neuronValue (std::vector<float>& inputs);
 
+	/* tree ranging */
 	uint numberOfNeurons ();
+	std::list<NeuralNode>::iterator findNode (uint node_number);
 
 	/* genetic function */
 	void mutate (float mutation_chance, uint nb__input);

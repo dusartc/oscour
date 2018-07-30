@@ -68,7 +68,7 @@ float NeuralNode::neuronValue (vector<float>& inputs) {
 	list<uint>::iterator itleaf = _leaves.begin();
 	itsyna = _leaves_synapses.begin();
 	for (uint leaf = 0; leaf < _leaves.size(); leaf++) {
-		value += (*itleaf).neuronValue(inputs) * (*itsyna);
+		value += inputs[*itleaf] * (*itsyna);
 		itleaf++;
 		itsyna++;
 	}
@@ -83,17 +83,31 @@ vector<float> NeuralNetwork::outputs (vector<float>& inputs) {
 
 
 
-///////////
-// OTHER //
-///////////
+//////////////////
+// TREE RANGING //
+//////////////////
 
 uint NeuralNode::numberOfNeurons () {
-	uint number = 1 + _leaves.size(); //current neuron + its leaves
+	uint number = 1; //current neuron
 	list<NeuralNode>::iterator itnode;
 	for (itnode = _branches.begin(); itnode != _branches.end(); itnode++) {
 		number += (*itnode).numberOfNeurons (); // size of deeper neurons
 	}
 	return number;
+}
+
+
+list<NeuralNode>::iterator NeuralNode::findNode (uint node_number) {
+	list<NeuralNode>::iterator itnode = _branches.begin();
+	while (true) {
+		uint deeper_neurons = (*itnode).numberOfNeurons ();
+		if (deeper_neurons > node_number - 1) {
+			node_number -= deeper_neurons;
+			itnode++;
+		}
+		else if (deeper_neurons == node_number - 1) return (itnode);
+		else return ((*itnode).findNode (node_number - 1)); //remove the current neuron
+	}
 }
 
 ///////////////////////
