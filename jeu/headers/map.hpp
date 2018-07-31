@@ -8,10 +8,12 @@ class Map {
 	public:
 		int _longueur;
 		std::vector<int> _obs;
+		std::vector<int> _pteros;
 
 		Map();
 		void addObs(int x);
-		bool end();
+		void addPtero(int x);
+		void process();
 };
 
 #endif
