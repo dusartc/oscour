@@ -20,9 +20,6 @@ void Brain::mutate() {
 		_trees[o].mutate(mutation_chance, _nb__input);
 	}
 }
-
-
-		
 		
 list<Individual*> Brain::crossWith(const Individual* father) const {
 	// get the father into a useful form
@@ -44,6 +41,9 @@ list<Individual*> Brain::crossWith(const Individual* father) const {
 	children.push_back(child1);
 	children.push_back(child2);
 	return(children);
-
 }
 
+
+double Brain::computeFitness () {
+	return _game();
+}

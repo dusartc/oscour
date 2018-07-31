@@ -1,19 +1,21 @@
 #ifndef JOUEURIA_HPP
 #define JOUEURIA_HPP
 
-#include "neuralnetwork.hpp"
+#include "brain.hpp"
 #include "joueur.hpp"
 #include <vector>
 
 class Joueuria : public Joueur {
 	public:
-		NeuralNetwork _network;
 		std::vector<float> _dist;
+		NeuralNetwork& _neural_network;
 
 		void simulate();
-		double getFitness();
+		double distanceReached();
 
-		Joueuria();
+		Joueuria(NeuralNetwork&);
 };
+
+double game (Brain& brain);
 
 #endif
