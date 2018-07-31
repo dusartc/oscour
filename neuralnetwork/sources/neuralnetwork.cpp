@@ -28,15 +28,15 @@ NeuralNetwork::NeuralNetwork (uint nb__input, uint nb_output, uint nb_synapses, 
 }
 
 NeuralNode::NeuralNode (const NeuralNode& neuron) {
-	list<NeuralNode>::iterator itnode = _branches.begin();
-	std::list<float>::iterator itsyna = _branches_synapses.begin();
+	list<NeuralNode>::const_iterator itnode = neuron._branches.begin();
+	std::list<float>::const_iterator itsyna = neuron._branches_synapses.begin();
 	for (uint branch = 0; branch < _branches.size(); branch++) {
 		_branches.push_back (NeuralNode(*itnode));
 		_leaves_synapses.push_back (*itsyna);
 		itnode++;
 		itsyna++;
 	}
-	list<uint>::iterator itleaf = _leaves.begin();
+	list<uint>::const_iterator itleaf = neuron._leaves.begin();
 	itsyna = _leaves_synapses.begin();
 	for (uint leaf = 0; leaf < _leaves.size(); leaf++) {
 		_leaves.push_back (*itleaf);
@@ -44,7 +44,6 @@ NeuralNode::NeuralNode (const NeuralNode& neuron) {
 		itleaf++;
 		itsyna++;
 	}
-
 }
 
 //////////////////////

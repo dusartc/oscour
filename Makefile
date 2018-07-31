@@ -8,42 +8,29 @@ GASRC = $(shell find genalgo/sources -name "*.cpp")
 GAOTMP = $(patsubst %.cpp,%.o,$(GASRC:genalgo/sources/%=%))
 GAOBJS = $(patsubst %,$(OBJDIR)/%,$(GAOTMP))
 GADEPS = $(patsubst %.o,$(DEPDIR)/%.d,$(GAOTMP))
-# general
-GESRC = $(shell find general/sources -name "*.cpp")
-GEOTMP = $(patsubst %.cpp,%.o,$(GESRC:general/sources/%=%))
-GEOBJS = $(patsubst %,$(OBJDIR)/%,$(GEOTMP))
-GEDEPS = $(patsubst %.o,$(DEPDIR)/%.d,$(GEOTMP))
-# k-means
-KMSRC = $(shell find kmeans/sources -name "*.cpp")
-KMOTMP = $(patsubst %.cpp,%.o,$(KMSRC:kmeans/sources/%=%))
-KMOBJS = $(patsubst %,$(OBJDIR)/%,$(KMOTMP))
-KMDEPS = $(patsubst %.o,$(DEPDIR)/%.d,$(KMOTMP))
+# neuralnetwork
+NNSRC = $(shell find neuralnetwork/sources -name "*.cpp")
+NNOTMP = $(patsubst %.cpp,%.o,$(NNSRC:neuralnetwork/sources/%=%))
+NNOBJS = $(patsubst %,$(OBJDIR)/%,$(NNOTMP))
+NNDEPS = $(patsubst %.o,$(DEPDIR)/%.d,$(NNOTMP))
+# jeu
+J1SRC = $(shell find jeu/sources -name "*.cpp")
+J1OTMP = $(patsubst %.cpp,%.o,$(J1SRC:jeu/sources/%=%))
+J1OBJS = $(patsubst %,$(OBJDIR)/%,$(J1OTMP))
+J1DEPS = $(patsubst %.o,$(DEPDIR)/%.d,$(J1OTMP))
 
-DEPS = $(GADEPS) $(GEDEPS) $(KMDEPS)
-OBJS = $(GAOBJS) $(GEOBJS) $(KMOBJS)
-
-# CUSRC = $(shell find $(SRCDIR) -name "*.cu")
-# CUOTMP = $(patsubst %.cu,%.o,$(CUSRC:$(SRCDIR)/%=%))
-# CUOBJS = $(patsubst %,$(OBJDIR)/%,$(CUOTMP))
-# CUDEPS = $(patsubst %.o,$(DEPDIR)/%.d,$(CUOTMP))
+DEPS = $(GADEPS) $(GNNDEPS) $(J1DEPS)
+OBJS = $(GAOBJS) $(GNNOBJS) $(J1OBJS)
 
 # Variables
-CC = icpc
-#CC = g++
+CC = g++
 CPPFLAGS = -Wall -Wextra -O3 -std=c++11
-CPPHEADERS = -Igenalgo/headers -Ikmeans/headers -Igeneral/headers
+CPPHEADERS = -Igenalgo/headers -Ineuralnetwork/headers -Ijeu/headers
 LIBS = -pthread -lm -fopenmp
-DISPLAYLIBS = -lsfml-graphics -lsfml-window -lsfml-system
 TESTLIBS = -lgtest -L/usr/lib
-ICPCREPORT = -qopt-report=1 -qopt-report-phase=loop,vec,par -qopt-report-annotate=html
-# -fopt-info optimized
-
-
-NVCC = /usr/local/cuda/bin/nvcc
-CUDAFLAGS= -std=c++11 -O3 -Iheaders
 
 # Routines
-all: $(GAOBJS) $(KMOBJS) $(GEOBJS)
+all: $(GAOBJS) $(KMOBJS) $(NNOBJS)
 	@echo Building the executable...
 	$(CC) -o main $(GAOBJS) $(KMOBJS) $(GEOBJS) $(LIBS) $(DISPLAYLIBS) $(CPPHEADERS) $(CPPFLAGS)
 
@@ -56,11 +43,7 @@ test: $(GAOBJS) $(KMOBJS)
 kmeans: $(KMOBJS)
 	@echo k-means sources built
 
-kmeans_test: kmeans genalgo
-	@echo Building k-means tests
-	$(CC) kmeans/tests/maintest.cpp -o test $(CPPFLAGS) $(CPPHEADERS) $(KMOBJS) $(GAOBJS) $(LIBS) $(TESTLIBS)
-	@echo Executing k-means tests
-	./test
+
 
 genalgo: $(GAOBJS)
 	@echo Genetic algorithm sources built
@@ -71,7 +54,7 @@ genalgo_test: genalgo
 	@echo Executing genetic algorithm tests
 	./test
 
-general: $(GEOBJS)
+neuralnetwork: $(NNOBJS)
 	@echo Display and simulation sources built
 
 
@@ -83,36 +66,28 @@ clean:
 
 .PHONY: all clean test
 
--include $(DEPS) # $(CUDEPS)
+-include $(DEPS)
 
-# $(OBJDIR)/%.o: $(SRCDIR)/%.cu
-# 	@echo Building cuda sources
-# 	mkdir -p $(dir $@)
-# 	mkdir -p $(DEPDIR)/$(dir $(@:$(OBJDIR)/%=%))
-# 	$(eval CU = $(shell find $(SRCDIR)/$(dir $*) -name "$(notdir $*).cu"))
-# 	$(NVCC) -c $(CUDAFLAGS) $(CU) -o $@ $(LIBS)
-# 	$(NVCC) -M $(CUDAFLAGS) $(CU) $(LIBS) > $(DEPDIR)/$*.d
-
-$(OBJDIR)/%.o: kmeans/sources/%.cpp
-	@echo Building c++ sources
+$(OBJDIR)/%.o: neuralnetwork/sources/%.cpp
+	@echo Building neural network c++ sources
 	mkdir -p $(dir $@)
 	mkdir -p $(DEPDIR)/$(dir $(@:$(OBJDIR)/%=%))
-	$(eval CPP = $(shell find kmeans/sources/$(dir $*) -name "$(notdir $*).cpp"))
-	$(CC) -c $(CPPFLAGS) $(CPPHEADERS) $(CPP) -o $@ $(LIBS) $(ICPCREPORT)
+	$(eval CPP = $(shell find neuralnetwork/sources/$(dir $*) -name "$(notdir $*).cpp"))
+	$(CC) -c $(CPPFLAGS) $(CPPHEADERS) $(CPP) -o $@ $(LIBS)
 	$(CC) -MM $(CPPFLAGS) $(CPPHEADERS) $(CPP) $(LIBS) > $(DEPDIR)/$*.d
 
 $(OBJDIR)/%.o: genalgo/sources/%.cpp
-	@echo Building c++ sources
+	@echo Building genetic algorithm c++ sources
 	mkdir -p $(dir $@)
 	mkdir -p $(DEPDIR)/$(dir $(@:$(OBJDIR)/%=%))
 	$(eval CPP = $(shell find genalgo/sources/$(dir $*) -name "$(notdir $*).cpp"))
-	$(CC) -c $(CPPFLAGS) $(CPPHEADERS) $(CPP) -o $@ $(LIBS) $(ICPCREPORT)
+	$(CC) -c $(CPPFLAGS) $(CPPHEADERS) $(CPP) -o $@ $(LIBS)
 	$(CC) -MM $(CPPFLAGS) $(CPPHEADERS) $(CPP) $(LIBS) > $(DEPDIR)/$*.d
 
-$(OBJDIR)/%.o: general/sources/%.cpp
-	@echo Building c++ sources
+$(OBJDIR)/%.o: jeu/sources/%.cpp
+	@echo Building game c++ sources
 	mkdir -p $(dir $@)
 	mkdir -p $(DEPDIR)/$(dir $(@:$(OBJDIR)/%=%))
-	$(eval CPP = $(shell find general/sources/$(dir $*) -name "$(notdir $*).cpp"))
-	$(CC) -c $(CPPFLAGS) $(CPPHEADERS) $(CPP) -o $@ $(LIBS) $(ICPCREPORT)
+	$(eval CPP = $(shell find jeu/sources/$(dir $*) -name "$(notdir $*).cpp"))
+	$(CC) -c $(CPPFLAGS) $(CPPHEADERS) $(CPP) -o $@ $(LIBS)
 	$(CC) -MM $(CPPFLAGS) $(CPPHEADERS) $(CPP) $(LIBS) > $(DEPDIR)/$*.d
