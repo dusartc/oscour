@@ -30,18 +30,15 @@ LIBS = -pthread -lm -fopenmp
 TESTLIBS = -lgtest -L/usr/lib
 
 # Routines
-all: $(GAOBJS) $(KMOBJS) $(NNOBJS)
+all: $(GAOBJS) $(NNOBJS) $(J1OBJS)
 	@echo Building the executable...
-	$(CC) -o main $(GAOBJS) $(KMOBJS) $(GEOBJS) $(LIBS) $(DISPLAYLIBS) $(CPPHEADERS) $(CPPFLAGS)
+	$(CC) -o main $(GAOBJS) $(NNOBJS) $(J1OBJS) $(LIBS) $(CPPHEADERS) $(CPPFLAGS)
 
 test: $(GAOBJS) $(KMOBJS)
 	@echo Building performance test...
 	$(CC) general/tests/perftest.cpp -o test $(GAOBJS) $(KMOBJS) $(LIBS) $(CPPHEADERS) $(CPPFLAGS) $(TESTLIBS)
 	@echo Executing performance test
 	./test
-
-kmeans: $(KMOBJS)
-	@echo k-means sources built
 
 
 
