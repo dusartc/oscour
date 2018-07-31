@@ -32,17 +32,17 @@ double Joueuria::distanceReached(){
 	return (double) x;
 }
 
-std::vector<float> computeDist(*Joueur j, *Map m){
+std::vector<float> computeDist(Joueur *j, Map *m){
 	std::vector<float> v;
-	for (vector<int>::iterator it = m._obs.begin(); it != m. _obs.end(); it++){
-		if(j.x < *it){
-			v.push_back(*it-j.x);
+	for (vector<int>::iterator it = m->_obs.begin(); it != m->_obs.end(); it++){
+		if(j->x < *it){
+			v.push_back(*it-j->x);
 			break;
 		} 
 	}
-	for (vector<int>::iterator it = m._pteros.begin(); it != m. _pteros.end(); it++){
-		if(j.x < *it){
-			v.push_back(*it-j.x);
+	for (vector<int>::iterator it = m->_pteros.begin(); it != m->_pteros.end(); it++){
+		if(j->x < *it){
+			v.push_back(*it-j->x);
 			break;
 		} 
 	}
@@ -60,7 +60,7 @@ double game (Brain& brain) {
 	m.addObs(95);
 	m.addPtero(12);
 	while(!end){
-		cout << m.toString(*michel);
+		cout << m.toString(&michel);
 
 		for (vector<int>::iterator it = m._obs.begin(); it != m. _obs.end(); it++){
 			if( michel.x == *it and michel.y==0){
@@ -77,7 +77,7 @@ double game (Brain& brain) {
 			}
 		}
 		if(michel.x == m._longueur) end = true;
-		michel._dist = computeDist(*michel, *m);
+		michel._dist = computeDist(&michel, &m);
 		michel.simulate();
 		m.process();
 	}

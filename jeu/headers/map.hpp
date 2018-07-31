@@ -1,9 +1,9 @@
 #ifndef MAP_HPP
 #define MAP_HPP
 
-#include <iostream>
 #include <vector>
 #include <string>
+#include "joueur.hpp"
 
 class Map {
 	public:
@@ -15,7 +15,7 @@ class Map {
 		void addObs(int x);
 		void addPtero(int x);
 		void process();
-		String toString(*Joueur j);
+		std::string toString(Joueur *j);
 };
 
 #endif
