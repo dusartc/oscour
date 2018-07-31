@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <vector>
+#include <string>
 
 class Map {
 	public:
@@ -14,6 +15,7 @@ class Map {
 		void addObs(int x);
 		void addPtero(int x);
 		void process();
+		String toString(*Joueur j);
 };
 
 #endif
