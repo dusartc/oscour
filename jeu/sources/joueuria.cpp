@@ -2,10 +2,15 @@
 #include <vector>
 using namespace std;
 
-Joueuria::Joueuria() : Joueur() {}
+
+
+
+
+
+Joueuria::Joueuria(NeuralNetwork& nn) : Joueur(), _neural_network(nn) {}
 
 void Joueuria::simulate() {
-	vector<float> out = _network.outputs(_dist);
+	vector<float> out = _neural_network.outputs(_dist);
 	if(momentum){
 		sautavant();
 		momentum = false;
@@ -27,6 +32,11 @@ void Joueuria::simulate() {
 	}
 }
 
-double Joueuria::getFitness(){
+double Joueuria::distanceReached(){
 	return (double) x;
+}
+
+double game (Brain& brain) {
+	Joueuria michel(brain);
+	return (michel.distanceReached());
 }
