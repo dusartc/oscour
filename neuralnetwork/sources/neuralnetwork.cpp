@@ -1,6 +1,7 @@
 #include "neuralnetwork.hpp"
 
 #include <random>
+#include <iostream>
 
 using namespace std;
 
@@ -22,6 +23,8 @@ NeuralNode::NeuralNode (uint nb__input, uint nb_synapses, uint deepness, uint de
 }
 
 NeuralNetwork::NeuralNetwork (uint nb__input, uint nb_output, uint nb_synapses, uint deepness_max){
+	_nb_output = nb_output;
+	_nb__input = nb__input;
 	for (uint tree = 0; tree < nb_output; tree++) {
 		_trees.push_back (NeuralNode (nb__input, nb_synapses, deepness_max, deepness_max));
 	}

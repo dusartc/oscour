@@ -53,36 +53,33 @@ std::vector<float> computeDist(Joueur *j, Map *m){
 }
 
 double game (Brain& brain) {
+	int nb_iter_max = 100;
 	Joueuria michel(brain);
 	Map m;
-	bool end = false;
 	m.addObs(5);
 	m.addObs(15);
 	m.addObs(20);
 	m.addObs(55);
 	m.addObs(95);
 	m.addPtero(12);
-	while(!end){
-		cout << m.toString(&michel);
-
+	for (int iter = 0; iter < nb_iter_max; iter++) {
 		for (vector<int>::iterator it = m._obs.begin(); it != m. _obs.end(); it++){
 			if( michel.x == *it and michel.y==0){
-				end = true;
-				cout << "rip" << endl;
+				break;
 			} 
 		}
 		if(michel.y == 1){
 			for (vector<int>::iterator it = m._pteros.begin(); it != m. _pteros.end(); it++){
 				if( michel.y == *it){
-					end = true;
-					cout << "rip" << endl;
+					break;
 				} 
 			}
 		}
-		if(michel.x == m._longueur) end = true;
+		if(michel.x == m._longueur) break;
 		michel._dist = computeDist(&michel, &m);
 		michel.simulate();
 		m.process();
 	}
+	cout << michel.distanceReached() << endl;
 	return (michel.distanceReached());
 }

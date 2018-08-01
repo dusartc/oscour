@@ -1,88 +1,37 @@
+#include "population.hpp"
+#include "brain.hpp"
+#include "joueuria.hpp"
 #include <iostream>
-#include <algorithm>
-#include <stdlib.h>
-#include <time.h>
-#include <unistd.h>
-#include "map.hpp"
-#include "joueur.hpp"
-#include <string>
+
 using namespace std;
 
-int main(int argc, char *argv[]){
-	srand(time(NULL));
-	Map m;
-	Joueur j;
-	bool end = false;
-	string premiereLigne, deuxiemeLigne;
-	m.addObs(5);
-	m.addObs(15);
-	m.addObs(20);
-	m.addObs(55);
-	m.addObs(95);
-	m.addPtero(12);
-//	cout << "joueur x : " << j.x << endl;
-	while(!end) {
-		if(j.y == 0){
-			premiereLigne = " ";
-			deuxiemeLigne = "o";
-		} else {
-			premiereLigne = "o";
-			deuxiemeLigne = "_";
-		}
-		for(int i=j.x+1;i<min(m._longueur,j.x+10);i++){
-			if(find(m._pteros.begin(), m._pteros.end(), i) != m._pteros.end()) {
-				premiereLigne += "*";
-			} else {
-				premiereLigne += " ";
-			}		
-		}
-		for(int i=j.x+1;i<min(m._longueur,j.x+10);i++){
-			if(find(m._obs.begin(), m._obs.end(), i) != m._obs.end()) {
-				deuxiemeLigne += "|";
-			} else {
-				deuxiemeLigne += "_";
-			}		
-		}	
-		deuxiemeLigne += " fitness : ";
+#define NB_INDIV 100
+#define NB_CHILDREN 160
+#define NB_MUTANTS 40
+#define NB_SURV_CHILD 80
+#define NB_ELITES 5
+#define NB_BREEDER 2
+#define NB_CONCUR 5
 
-		cout << premiereLigne << "\n" << deuxiemeLigne << j.x << endl;
-		for (vector<int>::iterator it = m._obs.begin(); it != m. _obs.end(); it++){
-			if( j.x == *it and j.y==0){
-				end = true;
-				cout << "rip" << endl;
-			} 
-		}
-		if(j.y == 1){
-			for (vector<int>::iterator it = m._pteros.begin(); it != m. _pteros.end(); it++){
-				if( j.y == *it){
-					end = true;
-					cout << "rip" << endl;
-				} 
-			}
-		}
-		if(j.x == m._longueur) end = true;
+#define NB_GEN 20
 
-		if(j.momentum){
-			j.sautavant();
-			j.momentum = false;
-		} else if(j.nextmove){
-			j.saute();
-			j.nextmove = false;
-		} else {
-			if(rand()%10+1 > 5){
-				if(rand()%10+1 > 5){
-					j.sautavant();
-					j.momentum = true;
-				} else {
-					j.saute();
-					j.nextmove = true;
-				}
-			} else {
-				j.avance();
-			}
-		}
-		m.process();
-		usleep(1000000);
-		system("clear"); //degueulasse/20
+#define NB__INPUT 2
+#define NB_OUTPUT 2
+#define NB_SYNAPSE 2
+#define DEEPNESS_MAX 2
+
+int main () {
+    Population pop;
+	list_individual_ptr init; //set of individuals that will initialize the population
+	unsigned int i;
+	for (i=0; i<NB_INDIV; i++) {
+		init.push_front(new Brain(game, NB__INPUT, NB_OUTPUT, NB_SYNAPSE, DEEPNESS_MAX));
+	}
+    pop.initParameters(NB_CHILDREN, NB_MUTANTS, NB_SURV_CHILD, NB_ELITES, NB_CONCUR);
+	pop.initIndividuals(init);
+	cout<< "starting evolution" << endl;
+	for (i=0; i<NB_GEN; i++) {
+		pop.newGeneration();
+		cout<< "generation numero : " << i << endl;
 	}
 }

@@ -10,9 +10,9 @@ typedef unsigned int uint;
 
 class Brain : public Individual, public NeuralNetwork {
 public:
-    std::function <double()> _game;
+    std::function <double(Brain&)> _game;
 
-    Brain (std::function <double()> game, uint nb__input, uint nb_output, uint nb_synapses, uint deepness_max) : Individual(), NeuralNetwork(nb__input, nb_output, nb_synapses, deepness_max), _game(game) {}
+    Brain (std::function <double(Brain&)> game, uint nb__input, uint nb_output, uint nb_synapses, uint deepness_max) : Individual(), NeuralNetwork(nb__input, nb_output, nb_synapses, deepness_max), _game(game) {}
     /* genetic functions */
     virtual double computeFitness (); //depends on the game
     void mutate();
