@@ -14,11 +14,11 @@ NeuralNode::NeuralNode (uint nb__input, uint nb_synapses, uint deepness, uint de
 
 	for (uint branch = 0; branch < nb_branches; branch++) {
 		_branches.push_back (NeuralNode (nb__input, nb_synapses, deepness-1, deepness_max));
-		_branches_synapses.push_back ((float) (rand()/RAND_MAX));
+		_branches_synapses.push_back ((float) rand()/RAND_MAX);
 	}
 	for (uint leaf = 0; leaf < nb_synapses - nb_branches; leaf++) {
 		_leaves.push_back (rand()%nb__input);
-		_leaves_synapses.push_back ((float) (rand()/RAND_MAX));
+		_leaves_synapses.push_back ((float) rand()/RAND_MAX);
 	}
 }
 
@@ -55,7 +55,7 @@ NeuralNode::NeuralNode (const NeuralNode& neuron) {
 
 float f(float value) {
 	/* neuron output in function of its inputs : here heavyside function */
-	return (min(max(value, (float)1), (float)0));
+	return (max(min(value, (float)1), (float)0));
 }
 
 float NeuralNode::neuronValue (vector<float>& inputs) {

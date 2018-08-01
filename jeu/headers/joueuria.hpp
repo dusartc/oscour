@@ -18,4 +18,6 @@ class Joueuria : public Joueur {
 
 double game (Brain& brain);
 
+double gameDisplay (Brain& brain);
+
 #endif

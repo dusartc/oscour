@@ -40,6 +40,7 @@ public:
 
 	NeuralNetwork (uint nb__input, uint nb_output, uint nb_synapses, uint deepness_max);
 
+
 	std::vector<float> outputs (std::vector<float>& inputs);
 };
 

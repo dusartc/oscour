@@ -8,15 +8,15 @@
 
 using namespace std;
 
-#define NB_INDIV 10
-#define NB_CHILDREN 16
-#define NB_MUTANTS 4
-#define NB_SURV_CHILD 8
-#define NB_ELITES 5
+#define NB_INDIV 100
+#define NB_CHILDREN 160
+#define NB_MUTANTS 40
+#define NB_SURV_CHILD 80
+#define NB_ELITES 1
 #define NB_BREEDER 2
-#define NB_CONCUR 5
+#define NB_CONCUR 2
 
-#define NB_GEN 20
+#define NB_GEN 30
 
 #define NB__INPUT 2
 #define NB_OUTPUT 2
@@ -38,4 +38,6 @@ int main () {
 		pop.newGeneration();
 		cout<< "generation numero : " << i << endl;
 	}
+	Brain michel = *dynamic_cast<const Brain*>(pop[0]);
+	gameDisplay (michel);
 }
