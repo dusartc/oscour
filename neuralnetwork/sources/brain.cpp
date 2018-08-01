@@ -31,10 +31,11 @@ list<Individual*> Brain::crossWith(const Individual* father) const {
 	//then we cross
 	for (uint o = 0; o < _nb_output; o++) {
 		/* choose a crossing point in each tree */
-		uint node_cross1 = rand()%(child1->_trees[o].numberOfNeurons());
-		uint node_cross2 = rand()%(child2->_trees[o].numberOfNeurons());
+		uint node_cross1 = 1 + rand()%(child1->_trees[o].numberOfNeurons()-1);
+		uint node_cross2 = 1 + rand()%(child2->_trees[o].numberOfNeurons()-1);
 		/* find and invert those two nodes */
 		list<NeuralNode>::iterator itnode1 = child1->_trees[o].findNode(node_cross1);
+		NeuralNode tmp1 = *itnode1;
 		list<NeuralNode>::iterator itnode2 = child2->_trees[o].findNode(node_cross2);
 		iter_swap (itnode1, itnode2);
 	}

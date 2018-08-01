@@ -23,7 +23,7 @@ public:
 	float neuronValue (std::vector<float>& inputs);
 
 	/* tree ranging */
-	uint numberOfNeurons ();
+	uint numberOfNeurons () const;
 	std::list<NeuralNode>::iterator findNode (uint node_number);
 
 	/* genetic function */

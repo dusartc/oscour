@@ -3,12 +3,15 @@
 #include "joueuria.hpp"
 #include <iostream>
 
+#include <random>
+#include <ctime>
+
 using namespace std;
 
-#define NB_INDIV 100
-#define NB_CHILDREN 160
-#define NB_MUTANTS 40
-#define NB_SURV_CHILD 80
+#define NB_INDIV 10
+#define NB_CHILDREN 16
+#define NB_MUTANTS 4
+#define NB_SURV_CHILD 8
 #define NB_ELITES 5
 #define NB_BREEDER 2
 #define NB_CONCUR 5
@@ -21,6 +24,7 @@ using namespace std;
 #define DEEPNESS_MAX 2
 
 int main () {
+	srand(time(NULL));
     Population pop;
 	list_individual_ptr init; //set of individuals that will initialize the population
 	unsigned int i;

@@ -14,11 +14,11 @@ NeuralNode::NeuralNode (uint nb__input, uint nb_synapses, uint deepness, uint de
 
 	for (uint branch = 0; branch < nb_branches; branch++) {
 		_branches.push_back (NeuralNode (nb__input, nb_synapses, deepness-1, deepness_max));
-		_branches_synapses.push_back ((uint) (rand()/RAND_MAX));
+		_branches_synapses.push_back ((float) (rand()/RAND_MAX));
 	}
 	for (uint leaf = 0; leaf < nb_synapses - nb_branches; leaf++) {
 		_leaves.push_back (rand()%nb__input);
-		_leaves_synapses.push_back ((uint) (rand()/RAND_MAX));
+		_leaves_synapses.push_back ((float) (rand()/RAND_MAX));
 	}
 }
 
@@ -33,15 +33,15 @@ NeuralNetwork::NeuralNetwork (uint nb__input, uint nb_output, uint nb_synapses, 
 NeuralNode::NeuralNode (const NeuralNode& neuron) {
 	list<NeuralNode>::const_iterator itnode = neuron._branches.begin();
 	std::list<float>::const_iterator itsyna = neuron._branches_synapses.begin();
-	for (uint branch = 0; branch < _branches.size(); branch++) {
+	for (uint branch = 0; branch < neuron._branches.size(); branch++) {
 		_branches.push_back (NeuralNode(*itnode));
-		_leaves_synapses.push_back (*itsyna);
+		_branches_synapses.push_back (*itsyna);
 		itnode++;
 		itsyna++;
 	}
 	list<uint>::const_iterator itleaf = neuron._leaves.begin();
-	itsyna = _leaves_synapses.begin();
-	for (uint leaf = 0; leaf < _leaves.size(); leaf++) {
+	itsyna = neuron._leaves_synapses.begin();
+	for (uint leaf = 0; leaf < neuron._leaves.size(); leaf++) {
 		_leaves.push_back (*itleaf);
 		_leaves_synapses.push_back (*itsyna);
 		itleaf++;
@@ -89,9 +89,9 @@ vector<float> NeuralNetwork::outputs (vector<float>& inputs) {
 // TREE RANGING //
 //////////////////
 
-uint NeuralNode::numberOfNeurons () {
+uint NeuralNode::numberOfNeurons () const {
 	uint number = 1; //current neuron
-	list<NeuralNode>::iterator itnode;
+	list<NeuralNode>::const_iterator itnode;
 	for (itnode = _branches.begin(); itnode != _branches.end(); itnode++) {
 		number += (*itnode).numberOfNeurons (); // size of deeper neurons
 	}
@@ -102,12 +102,12 @@ uint NeuralNode::numberOfNeurons () {
 list<NeuralNode>::iterator NeuralNode::findNode (uint node_number) {
 	list<NeuralNode>::iterator itnode = _branches.begin();
 	while (true) {
+		if (node_number == 1) return (itnode);
 		uint deeper_neurons = (*itnode).numberOfNeurons ();
-		if (deeper_neurons > node_number - 1) {
+		if (deeper_neurons < node_number) {
 			node_number -= deeper_neurons;
 			itnode++;
 		}
-		else if (deeper_neurons == node_number - 1) return (itnode);
 		else return ((*itnode).findNode (node_number - 1)); //remove the current neuron
 	}
 }
@@ -123,7 +123,8 @@ void NeuralNode::mutate (float mutation_chance, uint nb__input){
 	*/
 	list<NeuralNode>::iterator itnode = _branches.begin();
 	std::list<float>::iterator itsyna = _branches_synapses.begin();
-	for (uint branch = 0; branch < _branches.size(); branch++) {
+	uint init_nb_branches = _branches.size(); //initial number of branches, can increase
+	for (uint branch = 0; branch < init_nb_branches; branch++) {
 		if (rand() > mutation_chance*RAND_MAX) {
 			/* duplicate */
 			_branches.push_back (NeuralNode(*itnode));
@@ -141,7 +142,8 @@ void NeuralNode::mutate (float mutation_chance, uint nb__input){
 	}
 	list<uint>::iterator itleaf = _leaves.begin();
 	itsyna = _leaves_synapses.begin();
-	for (uint leaf = 0; leaf < _leaves.size(); leaf++) {
+	uint init_nb_leaves = _leaves.size(); //initial number of leaves
+	for (uint leaf = 0; leaf < init_nb_leaves; leaf++) {
 		if (rand() > mutation_chance*RAND_MAX) {
 			/* duplicate */
 			_leaves.push_back (*itleaf);
