@@ -1,6 +1,7 @@
 #include "joueuria.hpp"
 #include "map.hpp"
 #include <vector>
+#include <algorithm>
 using namespace std;
 
 Joueuria::Joueuria(NeuralNetwork& nn) : Joueur(), _neural_network(nn) {}
@@ -33,16 +34,18 @@ double Joueuria::distanceReached(){
 }
 
 std::vector<float> computeDist(Joueur *j, Map *m){
-	std::vector<float> v;
+	std::vector<float> v(2);
+	v[0] = 1.0f;
+	v[1] = 1.0f;
 	for (vector<int>::iterator it = m->_obs.begin(); it != m->_obs.end(); it++){
 		if(j->x < *it){
-			v.push_back(*it-j->x);
+			v[0] = min((float)(*it-j->x)/10,1.0f);
 			break;
-		} 
+		}
 	}
 	for (vector<int>::iterator it = m->_pteros.begin(); it != m->_pteros.end(); it++){
 		if(j->x < *it){
-			v.push_back(*it-j->x);
+			v[1] = min((float)(*it-j->x)/10,1.0f);
 			break;
 		} 
 	}
