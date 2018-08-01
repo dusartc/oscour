@@ -45,5 +45,5 @@ list<Individual*> Brain::crossWith(const Individual* father) const {
 
 
 double Brain::computeFitness () {
-	return _game();
+	return _game(*this);
 }
