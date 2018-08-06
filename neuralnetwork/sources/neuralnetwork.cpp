@@ -98,6 +98,33 @@ uint NeuralNode::numberOfNeurons () const {
 	return number;
 }
 
+uint NeuralNode::numberOfNeuronsAndLeaves () const {
+	uint number = 1 + _leaves.size(); //current neuron
+	list<NeuralNode>::const_iterator itnode;
+	for (itnode = _branches.begin(); itnode != _branches.end(); itnode++) {
+		number += (*itnode).numberOfNeuronsAndLeaves (); // size of deeper neurons
+	}
+	return number;
+}
+
+uint NeuralNetwork::numberOfNeurons () const {
+	uint number = 0; //current neuron
+	list<NeuralNode>::const_iterator itnode;
+	for (uint o =0; o < _nb_output; o++) {
+		number += _trees[o].numberOfNeurons (); // size of this output tree
+	}
+	return number;
+}
+
+uint NeuralNetwork::numberOfNeuronsAndLeaves () const {
+	uint number = 0; //current neuron
+	list<NeuralNode>::const_iterator itnode;
+	for (uint o =0; o < _nb_output; o++) {
+		number += _trees[o].numberOfNeuronsAndLeaves (); // size of this output tree
+	}
+	return number;
+}
+
 
 list<NeuralNode>::iterator NeuralNode::findNode (uint node_number) {
 	list<NeuralNode>::iterator itnode = _branches.begin();
@@ -110,6 +137,40 @@ list<NeuralNode>::iterator NeuralNode::findNode (uint node_number) {
 		}
 		else return ((*itnode).findNode (node_number - 1)); //remove the current neuron
 	}
+}
+
+
+
+void NeuralNode::display(std::ostream& out, uint deepness) const {
+	// branches first
+	list<NeuralNode>::const_iterator itnode = _branches.begin();
+	std::list<float>::const_iterator itsyna = _branches_synapses.begin();
+	for (uint branch = 0; branch < _branches.size(); branch++) {
+		// display the synapse
+		for (uint d=0; d<deepness; d++) out << "-----";
+		out << "  " << *itsyna << "*neur\n";
+		//display the neuron
+		(*itnode).display(out, deepness+1);
+		itnode++;
+		itsyna++;
+	}
+	// then leaves
+	list<uint>::const_iterator itleaf = _leaves.begin();
+	itsyna = _leaves_synapses.begin();
+	for (uint leaf = 0; leaf < _leaves.size(); leaf++) {
+		for (uint d=0; d<deepness; d++) out << "-----";
+		out << "  " << *itsyna << "*" << *itleaf << "\n";
+		itleaf++;
+		itsyna++;
+	}
+}
+
+ostream& operator<<(ostream& out, const NeuralNetwork& network) {
+	for (uint o=0; o<network._nb_output; o++) {
+		out << "output nb : "<< o << " neur\n";
+		network._trees[o].display(out, 0);
+	}
+	return (out);
 }
 
 ///////////////////////

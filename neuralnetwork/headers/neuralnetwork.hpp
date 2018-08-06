@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <list>
+#include <iostream>
 
 typedef unsigned int uint;
 
@@ -24,10 +25,15 @@ public:
 
 	/* tree ranging */
 	uint numberOfNeurons () const;
+	uint numberOfNeuronsAndLeaves () const;
 	std::list<NeuralNode>::iterator findNode (uint node_number);
+	void display(std::ostream&, uint deepness) const; //as a function because we can't pass 2 arguments to <<
+
 
 	/* genetic function */
 	void mutate (float mutation_chance, uint nb__input);
+
+
 };
 
 
@@ -42,9 +48,13 @@ public:
 
 
 	std::vector<float> outputs (std::vector<float>& inputs);
+
+	uint numberOfNeurons () const;
+	uint numberOfNeuronsAndLeaves () const;
+
 };
 
-
+std::ostream& operator<<(std::ostream&, const NeuralNetwork&);
 
 
 
