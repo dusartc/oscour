@@ -3,6 +3,9 @@
 #include "macro.hpp"
 #include <iostream>
 #include <sstream>
+#include <stdlib.h>
+#include <time.h>
+#include <algorithm>
 
 using namespace std;
 
@@ -15,12 +18,25 @@ Map::Map(Snake& snake, int s) : _snake(snake) {
 	for (int i = 0; i < s; i++) {
 		_map[i].resize(s);
 	}
+	srand(time(NULL));
 }
 
 void Map::move_snake(vector<int> v){
-	if(v[0] == _bouffe[0] && v[1] == _bouffe[1]) {
+	if(_snake._snake.front()[0] + v[0] == _bouffe[0] && _snake._snake.front()[1] + v[1] == _bouffe[1]) {
 		_snake.move(v, true);
-		//TODO gen nouvelle bouffe
+		bool t = false;
+		while(!t){
+			if(_snake._snake.size() == _size*_size) return;
+			int x = rand() % _size;
+			int y = rand() % _size;
+			if(find(_snake._snake.begin(), _snake._snake.end(), vector<int> {x,y}) != _snake._snake.end()) {
+				t = false;
+			} else {
+				t = true;
+				_bouffe[0] = x;
+				_bouffe[1] = y;
+			}
+		}
 		return;
 	}
 	_snake.move(v, false);
@@ -58,5 +74,8 @@ string Map::print(){
 }
 
 bool Map::end(){
-	return _snake.dead() && ((_snake._snake.front()[0] < 0 || _snake._snake.front()[0] > _size) || (_snake._snake.front()[1] < 0 || _snake._snake.front()[1] > _size));
+	return (_snake.dead() ||
+		((_snake._snake.front()[0] < 0 || _snake._snake.front()[0] > _size) || 
+			(_snake._snake.front()[1] < 0 || _snake._snake.front()[1] > _size)) ||
+		_snake._snake.size() == _size*_size);
 }
