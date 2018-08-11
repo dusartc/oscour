@@ -16,12 +16,18 @@ public:
 	std::list<uint>       _leaves;
 	std::list<float>      _leaves_synapses;
 
+	uint _key; //useful for quick search in hash table
+
 	/* constructors */
 	NeuralNode (uint nb__input, uint nb_synapses, uint deepness, uint deepness_max);
 	NeuralNode (const NeuralNode&);
 
 	/* output computation */
 	float neuronValue (std::vector<float>& inputs);
+
+	/* learning */
+	float neuronValueHashTable (std::vector<float>& inputs, std::vector<float>& hash_table, uint& key);
+	void  retropropagate       (std::vector<float>& inputs, std::vector<float>& hash_table, float error, float learning_coef);
 
 	/* tree ranging */
 	uint numberOfNeurons () const;
@@ -48,6 +54,8 @@ public:
 
 
 	std::vector<float> outputs (std::vector<float>& inputs);
+
+	void learn (std::vector<float>& inputs, std::vector<float>& outputs, float learning_coef);
 
 	uint numberOfNeurons () const;
 	uint numberOfNeuronsAndLeaves () const;
