@@ -49,7 +49,7 @@ void Map::update(){
 		}
 	}
 	for (list< vector<int> >::iterator lit = _snake._snake.begin(); lit != _snake._snake.end(); lit++) {
-		_map[((*lit)[0] < 0 ? 0 : (*lit)[0])][((*lit)[1] < 0 ? 0 : (*lit)[1])] = 1;
+		_map[((*lit)[0] < 0 ? 0 : ((*lit)[0]) >= _size ? _size - 1 : (*lit)[0])][((*lit)[1] < 0 ? 0 : ((*lit)[1]) >= _size ? _size - 1 : (*lit)[1])] = 1;
 	}
 	_map[_bouffe[0]][_bouffe[1]] = 2;
 }
