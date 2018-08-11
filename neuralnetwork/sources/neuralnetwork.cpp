@@ -53,9 +53,14 @@ NeuralNode::NeuralNode (const NeuralNode& neuron) {
 // NEURAL RESPONSES //
 //////////////////////
 
-float f(float value) {
+float  f (float x) {
 	/* neuron output in function of its inputs : here heavyside function */
-	return (max(min(value, (float)1), (float)0));
+	return (max(min(x, (float)1), (float)0));
+}
+
+float df (float x) {
+	/* derivativ of f */
+	return ((x<1)*(x>0));
 }
 
 float NeuralNode::neuronValue (vector<float>& inputs) {
@@ -81,6 +86,62 @@ vector<float> NeuralNetwork::outputs (vector<float>& inputs) {
 	vector<float> outputs(_nb_output);
 	for (uint o = 0; o < _nb_output; o++) outputs[o] = _trees[o].neuronValue(inputs);
 	return (outputs);
+}
+
+//////////////
+// LEARNING //
+//////////////
+void NeuralNetwork::learn (vector<float>& inputs, vector<float>& outputs, float learning_coef) {
+	for (uint o = 0; o < _nb_output; o++) {
+		vector<float> hash_table(_trees[o].numberOfNeurons());
+		uint key = 0;
+		float error = outputs[0] - _trees[o].neuronValueHashTable(inputs, hash_table, key);
+		_trees[o].retropropagate (inputs, hash_table, error, learning_coef);
+	}
+}
+
+float NeuralNode::neuronValueHashTable (vector<float>& inputs, vector<float>& hash_table, uint& key) {
+	/* saves the value in a table */
+	_key = key;
+	key++; // so that every neuron has a different key
+	float value = 0;
+	list<NeuralNode>::iterator itnode = _branches.begin();
+	std::list<float>::iterator itsyna = _branches_synapses.begin();
+	for (uint branch = 0; branch < _branches.size(); branch++) {
+		value += (*itnode).neuronValueHashTable(inputs, hash_table, key) * (*itsyna);
+		itnode++;
+		itsyna++;
+	}
+	list<uint>::iterator itleaf = _leaves.begin();
+	itsyna = _leaves_synapses.begin();
+	for (uint leaf = 0; leaf < _leaves.size(); leaf++) {
+		value += inputs[*itleaf] * (*itsyna);
+		itleaf++;
+		itsyna++;
+	}
+	hash_table[_key] = value;
+	return f(value);
+}
+
+void NeuralNode::retropropagate (vector<float>& inputs, vector<float>& hash_table, float error, float learning_coef) {
+	/* retropropagate the error using the hash_table */
+	list<NeuralNode>::iterator itnode = _branches.begin();
+	std::list<float>::iterator itsyna = _branches_synapses.begin();
+	for (uint branch = 0; branch < _branches.size(); branch++) {
+		float value = hash_table[(*itnode)._key];
+		(*itnode).retropropagate(inputs, hash_table, df(value)*(*itsyna)*error, learning_coef);
+		*itsyna += learning_coef*error*f(value);
+		itnode++;
+		itsyna++;
+	}
+	list<uint>::iterator itleaf = _leaves.begin();
+	itsyna = _leaves_synapses.begin();
+	for (uint leaf = 0; leaf < _leaves.size(); leaf++) {
+		*itsyna += learning_coef*error*f(inputs[*itleaf]);
+		itleaf++;
+		itsyna++;
+	}
+	
 }
 
 
