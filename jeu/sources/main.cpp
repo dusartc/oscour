@@ -40,4 +40,5 @@ int main () {
 	}
 	Brain michel = *dynamic_cast<const Brain*>(pop[0]);
 	gameDisplay (michel);
+	cout << "best brain :\n" << michel << "with " << michel.numberOfNeuronsAndLeaves() << " total network size\n";
 }
